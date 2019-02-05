@@ -3,6 +3,7 @@
 
 # include "SceneBase.h"
 # include "DictionarySearch.h"
+# include "AddWord.h"
 # include "ScrollBar.h"
 
 void Main()
@@ -17,6 +18,7 @@ void Main()
 	MyApp manager;
 	manager.add<Empty>(L"Empty");
 	manager.add<DictionarySearch>(L"DictionarySearch");
+	manager.add<AddWord>(L"AddWord");
 
 	while (System::Update())
 	{	

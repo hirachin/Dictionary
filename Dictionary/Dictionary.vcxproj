@@ -278,6 +278,7 @@
     <Font Include="Example\YomogiFont.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddWord.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="DictionarySearch.h" />
     <ClInclude Include="InputWord.h" />

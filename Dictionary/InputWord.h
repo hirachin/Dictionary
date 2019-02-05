@@ -9,14 +9,16 @@ class InputWord
 	Size m_size;
 	bool m_hasChanged;
 
-	PlusCombinedKeys m_COPYKEY;
+	PlusCombinedKeys m_copyKey;
+
+	bool m_isEnabled;
 
 public:
 
 	InputWord() {}
 
-	InputWord(const String& _fontName, const Size& _size) :m_fontName(_fontName), m_size(_size),
-		m_hasChanged(false),m_COPYKEY(Input::KeyControl + Input::KeyV)
+	InputWord(const String& _fontName, const Size& _size,bool _enabled = true) :m_fontName(_fontName), m_size(_size),
+		m_hasChanged(false),m_copyKey(Input::KeyControl + Input::KeyV), m_isEnabled(_enabled)
 	{
 
 	}
@@ -31,12 +33,15 @@ public:
 
 	void update()
 	{
-		const String preText = m_text;
 		m_hasChanged = false;
+
+		if (!m_isEnabled) { return; }
+
+		const String preText = m_text;
 
 		Input::GetCharsHelper(m_text);
 
-		if (m_COPYKEY.clicked)
+		if (m_copyKey.clicked)
 		{
 			const String clipboardText = Clipboard::GetText();
 
@@ -56,6 +61,24 @@ public:
 	{
 		Rect(_pos, m_size).drawFrame(2, 0, Palette::Black);
 		FontAsset(m_fontName)(m_text).draw(_pos.movedBy(10, 0), Palette::Black);
+
+		if (!m_isEnabled)
+		{
+			return;
+		}
+
+		const Rect wordRegion = FontAsset(m_fontName)(m_text).region(_pos.movedBy(10, 0));
+		const Point cursorPos = _pos.movedBy(10, 0).movedBy(wordRegion.w, 0);
+		const int offsetY = 5;
+
+		if (InRange<int>(Time::GetMillisec() % 2000, 0, 1000))
+		{
+			Rect(cursorPos.movedBy(5, offsetY), Size(3, m_size.y - offsetY * 2)).draw(Palette::Black);
+
+		}
+
+
+
 	}
 
 	void draw(int _x, int _y)const
