@@ -4,7 +4,8 @@
 
 struct CommonData
 {
-	String firstScene = L"DictionarySearch";
+	//String firstScene = L"DictionarySearch";
+	String firstScene = L"AddWord";
 };
 
 using MyApp = SceneManager<String, CommonData>;
