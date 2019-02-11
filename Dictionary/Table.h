@@ -16,6 +16,8 @@ public:
 
 	Table(){}
 
+	Table(const Size& _tableSize) :m_tableSize(_tableSize) {}
+
 	void draw(const Point& _pos,const Array<std::pair<String,String>>& _data, unsigned int _initIdx = 0)const
 	{
 		//cü
