@@ -50,7 +50,7 @@ class AddWord :public MyApp::Scene
 		m_keyMover.update();
 		m_scrollBar.update();
 
-		if (Input::KeyTab.clicked || Input::KeyEnter.clicked)
+		if (Input::KeyTab.clicked)
 		{
 			m_cursor += 1;
 			m_cursor %= 2;
