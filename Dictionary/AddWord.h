@@ -5,8 +5,7 @@
 
 class AddWord :public MyApp::Scene
 {
-	InputWord m_inputEnglish;
-	InputWord m_inputJapanese;
+	GUI m_gui;
 
 	Table m_table;
 	KeyMover m_keyMover;
@@ -15,30 +14,42 @@ class AddWord :public MyApp::Scene
 	Array<std::pair<String, String>> m_inputDatas;
 
 	PlusCombinedKeys m_addKey = PlusCombinedKeys(Input::KeyControl, Input::KeyEnter);
+	PlusCombinedKeys m_saveKey = PlusCombinedKeys(Input::KeyControl, Input::KeyS);
 
 	int m_cursor = 0;
 	int m_initIdx = 0;
 
+
+	bool save(const FilePath& _path)
+	{
+		Dictionary tempDictionary(_path);
+		tempDictionary.adds(m_inputDatas);
+		tempDictionary.sortAndDeleteDuplication();
+		m_inputDatas.clear();
+		return tempDictionary.save(_path);
+	}
+
 	bool addData()
 	{
-		if (m_inputEnglish.isEmpty() || m_inputJapanese.isEmpty()) { return false; }
+		if (m_gui.textField(L"english").text.isEmpty || m_gui.textField(L"japanese").text.isEmpty) { return false; }
 
-		m_inputDatas.emplace_back(m_inputEnglish.getText(), m_inputJapanese.getText());
-		m_inputEnglish.clear();
-		m_inputJapanese.clear();
+		m_inputDatas.emplace_back(m_gui.textField(L"english").text, m_gui.textField(L"japanese").text);
+		m_gui.textField(L"english").setText(L"");
+		m_gui.textField(L"japanese").setText(L"");
+
 		m_initIdx = 0;
 		m_scrollBar.setRangeEnd(m_inputDatas.size() - 1);
-
-		m_cursor = 0;
-		m_inputEnglish.setEnabled(true);
-		m_inputJapanese.setEnabled(false);
 		return true;
 	}
 
 	void init()override
 	{
-		m_inputEnglish = InputWord(L"wordFont", Size(300, 50));
-		m_inputJapanese = InputWord(L"wordFont", Size(300, 50),false);
+		m_gui = GUI(GUIStyle::Default);
+		m_gui.add(L"english", GUITextField::Create(10));
+		m_gui.add(L"japanese", GUITextField::Create(10));
+		m_gui.add(L"add", GUIButton::Create(L"’Ç‰Á"));
+		m_gui.add(L"save", GUIButton::Create(L"•Û‘¶"));
+
 		m_table = Table();
 		m_keyMover = KeyMover(Input::KeyDown, Input::KeyUp);
 		m_scrollBar = ScrollBar(0, 0, Point(610, 100), Size(20, 300));
@@ -50,32 +61,18 @@ class AddWord :public MyApp::Scene
 		m_keyMover.update();
 		m_scrollBar.update();
 
-		if (Input::KeyTab.clicked)
-		{
-			m_cursor += 1;
-			m_cursor %= 2;
-
-			switch (m_cursor)
-			{
-				case 0:
-				{
-					m_inputEnglish.setEnabled(true);
-					m_inputJapanese.setEnabled(false);
-					break;
-				}
-
-				case 1:
-				{
-					m_inputEnglish.setEnabled(false);
-					m_inputJapanese.setEnabled(true);
-					break;
-				}
-			}
-		}
-
-		if (m_addKey.clicked)
+		if (m_addKey.clicked || m_gui.button(L"add").pushed)
 		{
 			addData();
+		}
+
+		if (m_saveKey.clicked || m_gui.button(L"save").pushed)
+		{
+			if (const auto savePath = Dialog::GetOpen({ ExtensionFilter::CSV }))
+			{
+				const FilePath path = savePath.value();
+				save(path);
+			}
 		}
 
 		const int move = m_keyMover.getKeyMove() + Mouse::Wheel();
@@ -91,16 +88,10 @@ class AddWord :public MyApp::Scene
 		{
 			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_inputDatas.size() - 1);
 		}
-
-		m_inputEnglish.update();
-		m_inputJapanese.update();
 	}
 
 	void draw()const override
 	{
-		m_inputEnglish.draw(10, 20);
-		m_inputJapanese.draw(Window::Width() / 2 + 10, 20);
-		
 		Line(0, 90, Window::Width(), 90).draw(Palette::Black);
 		m_table.draw(Point(10,100),m_inputDatas,m_initIdx);
 		m_scrollBar.draw();

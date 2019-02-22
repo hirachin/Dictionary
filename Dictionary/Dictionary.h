@@ -16,6 +16,19 @@ public:
 		load(_path);
 	}
 
+	void add(const std::pair<String, String>& _data)
+	{
+		m_datas.push_back(_data);
+	}
+
+	void adds(const Array<std::pair<String, String>>& _datas)
+	{
+		for (auto&& d : _datas)
+		{
+			add(d);
+		}
+	}
+
 	void reload()
 	{
 		m_datas.clear();
@@ -31,7 +44,7 @@ public:
 
 	bool load(const FilePath& _path)
 	{
-		const CSVReader reader(_path);
+		CSVReader reader(_path);
 
 		if (!reader) { return false; }
 
@@ -43,12 +56,15 @@ public:
 			}
 		}
 		m_dictionaryPaths.push_back(_path);
+		reader.close();
 		return true;
 	}
 
-	void save(const FilePath& _path)
+	bool save(const FilePath& _path)
 	{
 		CSVWriter writer(_path);
+
+		if (!writer) { return false; }
 
 		for (const auto& d : m_datas)
 		{
@@ -56,6 +72,7 @@ public:
 		}
 
 		writer.close();
+		return true;
 	}
 
 	void sortEngliesh()
