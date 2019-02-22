@@ -16,6 +16,9 @@ class AddWord :public MyApp::Scene
 	PlusCombinedKeys m_addKey = PlusCombinedKeys(Input::KeyControl, Input::KeyEnter);
 	PlusCombinedKeys m_saveKey = PlusCombinedKeys(Input::KeyControl, Input::KeyS);
 
+	PlusCombinedKeys m_scrollRightKey = PlusCombinedKeys(Input::KeyControl, Input::KeyRight);
+	PlusCombinedKeys m_scrollLeftKey = PlusCombinedKeys(Input::KeyControl, Input::KeyLeft);
+
 	int m_cursor = 0;
 	int m_initIdx = 0;
 
@@ -42,6 +45,33 @@ class AddWord :public MyApp::Scene
 		return true;
 	}
 
+	bool clickAddKey()const
+	{
+		return m_addKey.clicked || m_gui.button(L"add").pushed;
+	}
+
+	bool clickSaveKey()const
+	{
+		return m_saveKey.clicked || m_gui.button(L"save").pushed;
+	}
+
+	void scrollTable()
+	{
+		const int move = m_keyMover.getKeyMove() + Mouse::Wheel();
+
+		if (move != 0)
+		{
+			m_initIdx += move;
+			m_initIdx = Clamp<int>(m_initIdx, 0, m_inputDatas.size() - 1);
+
+			m_scrollBar.setValue(m_initIdx);
+		}
+		else
+		{
+			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_inputDatas.size() - 1);
+		}
+	}
+
 	void init()override
 	{
 		m_gui = GUI(GUIStyle::Default);
@@ -61,12 +91,14 @@ class AddWord :public MyApp::Scene
 		m_keyMover.update();
 		m_scrollBar.update();
 
-		if (m_addKey.clicked || m_gui.button(L"add").pushed)
+		scrollTable();
+
+		if (clickAddKey())
 		{
 			addData();
 		}
 
-		if (m_saveKey.clicked || m_gui.button(L"save").pushed)
+		if (clickSaveKey())
 		{
 			if (const auto savePath = Dialog::GetOpen({ ExtensionFilter::CSV }))
 			{
@@ -75,19 +107,12 @@ class AddWord :public MyApp::Scene
 			}
 		}
 
-		const int move = m_keyMover.getKeyMove() + Mouse::Wheel();
-
-		if (move != 0)
+		if (m_scrollLeftKey.clicked || m_scrollRightKey.clicked)
 		{
-			m_initIdx += move;
-			m_initIdx = Clamp<int>(m_initIdx, 0, m_inputDatas.size() - 1);
+			changeScene(L"DictionarySearch");
+			m_gui.hide();
+		}
 
-			m_scrollBar.setValue(m_initIdx);
-		}
-		else
-		{
-			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_inputDatas.size() - 1);
-		}
 	}
 
 	void draw()const override

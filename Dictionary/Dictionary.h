@@ -7,6 +7,8 @@ class Dictionary
 
 	Array<FilePath> m_dictionaryPaths;
 
+	
+
 public:
 
 	Dictionary() {}

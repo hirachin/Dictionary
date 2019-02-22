@@ -20,11 +20,32 @@ class DictionarySearch : public MyApp::Scene
 	int m_initIdx;
 	Array<std::pair<String, String>> m_searchResult;
 
+	PlusCombinedKeys m_scrollRightKey = PlusCombinedKeys(Input::KeyControl, Input::KeyRight);
+	PlusCombinedKeys m_scrollLeftKey = PlusCombinedKeys(Input::KeyControl, Input::KeyLeft);
+
 	void search()
 	{
 		m_initIdx = 0;
 		m_searchResult = m_dictionary.search(m_inputWord.getText());
 		m_scrollBar.setRangeEnd(m_searchResult.size() - 1);
+	}
+
+	void scrollTable()
+	{
+		const int move = m_keyMover.getKeyMove() + Mouse::Wheel();
+
+		if (move != 0)
+		{
+			m_initIdx += move;
+			m_initIdx = Clamp<int>(m_initIdx, 0, m_searchResult.size() - 1);
+
+			m_scrollBar.setValue(m_initIdx);
+		}
+		else
+		{
+			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_searchResult.size() - 1);
+		}
+
 	}
 
 public:
@@ -49,6 +70,8 @@ public:
 		m_inputWord.update();
 		m_scrollBar.update();
 
+		scrollTable();
+
 		if (Input::KeyF5.clicked)
 		{
 			m_dictionary.reload();
@@ -59,19 +82,11 @@ public:
 			search();
 		}
 
-		const int move = m_keyMover.getKeyMove() + Mouse::Wheel();
-
-		if (move != 0)
+		if (m_scrollLeftKey.clicked || m_scrollRightKey.clicked)
 		{
-			m_initIdx += move;
-			m_initIdx = Clamp<int>(m_initIdx, 0, m_searchResult.size() - 1);
+			changeScene(L"AddWord");
+		}
 
-			m_scrollBar.setValue(m_initIdx);
-		}
-		else
-		{
-			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_searchResult.size() - 1);
-		}
 	}
 
 	void draw()const override
