@@ -109,7 +109,7 @@ class AddWord :public MyApp::Scene
 
 		if (m_scrollLeftKey.clicked || m_scrollRightKey.clicked)
 		{
-			changeScene(L"DictionarySearch");
+			changeScene(L"DictionarySearch", 500);
 			m_gui.hide();
 		}
 

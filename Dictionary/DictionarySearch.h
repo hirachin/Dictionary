@@ -74,6 +74,7 @@ public:
 
 		if (Input::KeyF5.clicked)
 		{
+			Println(L"reload");
 			m_dictionary.reload();
 		}
 
@@ -84,7 +85,7 @@ public:
 
 		if (m_scrollLeftKey.clicked || m_scrollRightKey.clicked)
 		{
-			changeScene(L"AddWord");
+			changeScene(L"AddWord",500);
 		}
 
 	}
