@@ -72,11 +72,13 @@ public:
 
 		scrollTable();
 
+		/*
 		if (Input::KeyF5.clicked)
 		{
 			Println(L"reload");
 			m_dictionary.reload();
 		}
+		*/
 
 		if (m_inputWord.hasChanged())
 		{
