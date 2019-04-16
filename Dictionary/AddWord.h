@@ -75,8 +75,8 @@ class AddWord :public MyApp::Scene
 	void init()override
 	{
 		m_gui = GUI(GUIStyle::Default);
-		m_gui.add(L"english", GUITextField::Create(10));
-		m_gui.add(L"japanese", GUITextField::Create(10));
+		m_gui.add(L"english", GUITextField::Create(none));
+		m_gui.add(L"japanese", GUITextField::Create(none));
 		m_gui.add(L"add", GUIButton::Create(L"’Ç‰Á"));
 		m_gui.add(L"save", GUIButton::Create(L"•Û‘¶"));
 
