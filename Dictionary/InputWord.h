@@ -10,15 +10,18 @@ class InputWord
 	bool m_hasChanged;
 
 	PlusCombinedKeys m_pasteKey;
+	PlusCombinedKeys m_deleteKey;
 
 	bool m_isEnabled;
 
 public:
 
-	InputWord() {}
+	InputWord(){}
 
 	InputWord(const String& _fontName, const Size& _size, bool _enabled = true) :m_fontName(_fontName), m_size(_size),
-		m_hasChanged(false), m_pasteKey(Input::KeyControl + Input::KeyV), m_isEnabled(_enabled)
+		m_hasChanged(false), m_isEnabled(_enabled),
+		m_pasteKey(Input::KeyControl + Input::KeyV),
+		m_deleteKey(Input::KeyControl + Input::KeyD)
 	{
 
 	}
@@ -50,6 +53,7 @@ public:
 
 		const String preText = m_text;
 
+
 		Input::GetCharsHelper(m_text);
 
 		if (m_pasteKey.clicked)
@@ -60,6 +64,11 @@ public:
 			{
 				m_text += clipboardText;
 			}
+		}
+
+		if (m_deleteKey.clicked)
+		{
+			clear();
 		}
 
 		if (m_text != preText)
@@ -73,12 +82,7 @@ public:
 		Rect(_pos, m_size).drawFrame(2, 0, m_isEnabled?Palette::Blue:Palette::Black);
 		FontAsset(m_fontName)(m_text).draw(_pos.movedBy(10, 0), Palette::Black);
 
-		if (!m_isEnabled)
-		{
-			return;
-		}
-
-
+		if (!m_isEnabled) { return; }
 
 		const Rect wordRegion = FontAsset(m_fontName)(m_text).region(_pos.movedBy(10, 0));
 		const Point cursorPos = _pos.movedBy(10, 0).movedBy(wordRegion.w, 0);

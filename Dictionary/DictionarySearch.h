@@ -25,6 +25,12 @@ class DictionarySearch : public MyApp::Scene
 
 	void search()
 	{
+		if (m_inputWord.getText().isEmpty)
+		{
+			m_searchResult = m_dictionary.getDatas();
+			return;
+		}
+
 		m_initIdx = 0;
 		m_searchResult = m_dictionary.search(m_inputWord.getText());
 		m_scrollBar.setRangeEnd(m_searchResult.size() - 1);

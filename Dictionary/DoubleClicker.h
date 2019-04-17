@@ -9,7 +9,7 @@ class DoubleClicker
 
 	int m_count;
 
-	const int m_timeout_ms = 200;
+	int m_timeout_ms = 200;
 
 	bool m_isDoubleClicked;
 
