@@ -281,6 +281,7 @@
     <ClInclude Include="AddWord.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="DictionarySearch.h" />
+    <ClInclude Include="DoubleClicker.h" />
     <ClInclude Include="InputWord.h" />
     <ClInclude Include="KeyMover.h" />
     <ClInclude Include="SceneBase.h" />
