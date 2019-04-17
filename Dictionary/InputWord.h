@@ -9,7 +9,7 @@ class InputWord
 	Size m_size;
 	bool m_hasChanged;
 
-	PlusCombinedKeys m_copyKey;
+	PlusCombinedKeys m_pasteKey;
 
 	bool m_isEnabled;
 
@@ -18,7 +18,7 @@ public:
 	InputWord() {}
 
 	InputWord(const String& _fontName, const Size& _size, bool _enabled = true) :m_fontName(_fontName), m_size(_size),
-		m_hasChanged(false), m_copyKey(Input::KeyControl + Input::KeyV), m_isEnabled(_enabled)
+		m_hasChanged(false), m_pasteKey(Input::KeyControl + Input::KeyV), m_isEnabled(_enabled)
 	{
 
 	}
@@ -52,7 +52,7 @@ public:
 
 		Input::GetCharsHelper(m_text);
 
-		if (m_copyKey.clicked)
+		if (m_pasteKey.clicked)
 		{
 			const String clipboardText = Clipboard::GetText();
 
