@@ -23,17 +23,23 @@ class DictionarySearch : public MyApp::Scene
 	PlusCombinedKeys m_scrollRightKey = PlusCombinedKeys(Input::KeyControl, Input::KeyRight);
 	PlusCombinedKeys m_scrollLeftKey = PlusCombinedKeys(Input::KeyControl, Input::KeyLeft);
 
+	void setSearchResult(const Array<std::pair<String, String>>& _result)
+	{
+		m_initIdx = 0;
+		m_searchResult = _result;
+		m_scrollBar.setRangeEnd(m_searchResult.size() - 1);
+		m_scrollBar.setValue(m_initIdx);
+	}
+
 	void search()
 	{
 		if (m_inputWord.getText().isEmpty)
 		{
-			m_searchResult = m_dictionary.getDatas();
+			setSearchResult(m_dictionary.getDatas());
 			return;
 		}
 
-		m_initIdx = 0;
-		m_searchResult = m_dictionary.search(m_inputWord.getText());
-		m_scrollBar.setRangeEnd(m_searchResult.size() - 1);
+		setSearchResult(m_dictionary.search(m_inputWord.getText()));
 	}
 
 	void scrollTable()
@@ -44,14 +50,12 @@ class DictionarySearch : public MyApp::Scene
 		{
 			m_initIdx += move;
 			m_initIdx = Clamp<int>(m_initIdx, 0, m_searchResult.size() - 1);
-
 			m_scrollBar.setValue(m_initIdx);
 		}
 		else
 		{
 			m_initIdx = Clamp<int>(m_scrollBar.getValue(), 0, m_searchResult.size() - 1);
 		}
-
 	}
 
 public:
@@ -88,6 +92,7 @@ public:
 
 		if (m_inputWord.hasChanged())
 		{
+			Println(L"change");
 			search();
 		}
 
@@ -100,6 +105,7 @@ public:
 
 	void draw()const override
 	{
+
 		m_inputWord.draw(50, 20);
 		Line(0, 90, Window::Width(), 90).draw(Palette::Black);
 		m_table.draw(Point(10, 100), m_searchResult, m_initIdx);
