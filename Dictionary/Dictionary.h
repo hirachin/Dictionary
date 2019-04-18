@@ -81,7 +81,7 @@ public:
 	{
 		std::sort(m_datas.begin(), m_datas.end(), [](const std::pair<String, String>& a, const std::pair<String, String>& b)
 		{
-			return a.first < b.first;
+			return a.first.lower() < b.first.lower();
 		});
 	}
 
@@ -110,7 +110,7 @@ public:
 
 		for (const auto& d : m_datas)
 		{
-			if (matchWord(_search, d.first))
+			if (matchWord(_search.lower(), d.first.lower()))
 			{
 				findData.push_back(d);
 			}

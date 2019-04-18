@@ -92,7 +92,6 @@ public:
 
 		if (m_inputWord.hasChanged())
 		{
-			Println(L"change");
 			search();
 		}
 
